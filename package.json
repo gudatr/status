@@ -1,0 +1,27 @@
+{
+  "name": "status",
+  "version": "1.0.0",
+  "description": "A simple status page inspired by the atlassian status page with customizable status requests",
+  "main": "build/app.js",
+  "scripts": {
+    "build": "tsc --build --force && copyfiles -u 1 src/**/*.{html,ico,css,js,map} build/",
+    "start": "npm run build && node build/app.js --no-warnings",
+    "test": "npm run build && node build/test.js --experimental-test-coverage --test-reporter=tap"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gudatr/status.git"
+  },
+  "author": "gudatr / Robert Gudat",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gudatr/status/issues"
+  },
+  "homepage": "https://github.com/gudatr/status#readme",
+  "devDependencies": {
+    "@types/node": "^18.15.0"
+  },
+  "dependencies": {
+    "postgres-pool": "github:gudatr/postgres-pool"
+  }
+}
