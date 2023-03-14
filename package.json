@@ -22,6 +22,7 @@
     "@types/node": "^18.15.0"
   },
   "dependencies": {
-    "postgres-pool": "github:gudatr/postgres-pool"
+    "postgres-pool": "github:gudatr/postgres-pool",
+    "uws-router": "github:gudatr/uws-router"
   }
 }
