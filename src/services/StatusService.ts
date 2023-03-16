@@ -18,9 +18,17 @@ export default class StatusService {
         this.getEndpoints();
 
         let promises = [];
+        let response_times: number[] = [];
+        let id = 0;
 
         for (let endpoint of this.endpoints) {
-            promises.push(fetch(endpoint.url, {
+            let currentId = ++id;
+
+            response_times[currentId] = Date.now();
+
+            promises[currentId] = fetch(endpoint.url, {
+                signal: AbortSignal.timeout(Environment.status_timeout),
+                cache: 'no-cache',
                 body: endpoint.body
             }).catch((error) => {
                 return new Response(JSON.stringify({
@@ -29,7 +37,9 @@ export default class StatusService {
                     status: 400,
                     statusText: 'Network Error'
                 });
-            }));
+            }).finally(() => {
+                response_times[currentId] = Date.now() - response_times[currentId]
+            });
         }
 
         let results = await Promise.all(promises);
@@ -37,18 +47,25 @@ export default class StatusService {
         for (let i = 0; i < this.endpoints.length; i++) {
             let endpoint = this.endpoints[i];
             let result = results[i];
+            let state: string;
+            let message: string;
 
-            if (!result.ok) {
-
+            try {
+                let data = await result.json();
+                state = result.ok ? (data.state ?? 'okay') : 'outage';
+                message = data.message ?? '-';
+            } catch (err: any) {
+                state = 'impaired';
+                message = err.message ?? 'Error';
             }
 
-            await this.writeAvailability(endpoint, 'okay', '');
+            await this.writeAvailability(endpoint, state, message, response_times[i]);
         }
     }
 
-    private static async writeAvailability(endpoint: StatusEndpoint, state: 'outage' | 'impaired' | 'okay', info: string) {
+    private static async writeAvailability(endpoint: StatusEndpoint, state: string, info: string, response_time: number) {
         await pool.query('write-availability', `
-        INSERT INTO ${Environment.postgres.status_endpoints_table} (status_endpoint_id, state, info, time)
-        VALUES ($1,$2,$3,$4)`, [endpoint.id, state, info, Date.now()]);
+        INSERT INTO ${Environment.postgres.status_endpoints_table} (status_endpoint_id, state, info, response_time, time)
+        VALUES ($1,$2,$3,$4,$5)`, [endpoint.id, state, info, response_time, Date.now()]);
     }
 }
