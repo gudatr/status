@@ -10,23 +10,46 @@ export default async function TableSetup(pool: Postgres): Promise<boolean> {
     if (table_columns.length === 0) {
         let client = await pool.connect();
 
+        console.log("Running table setup");
+
         try {
             await client.queryString(`
-            CREATE TABLE ${Environment.postgres.logs_table} (
-                id BIGSERIAL PRIMARY KEY,
-                level SMALLINT,
-                time BIGINT,
-                server VARCHAR(${Environment.postgres.column_server_size}),
-                channel VARCHAR(${Environment.postgres.column_channel_size}),
-                message VARCHAR(256),
-                data VARCHAR(4096),
-                search TSVECTOR);`);
+            CREATE TABLE ${Environment.postgres.setup.status_endpoints_table} (
+                id SERIAL PRIMARY KEY,
+                name VARCHAR(256),
+                url VARCHAR(2048),
+                headers VARCHAR(2048),
+                body VARCHAR(2048)`);
 
+            await client.queryString(`
+            CREATE TABLE ${Environment.postgres.setup.availability_table} (
+                id SERIAL PRIMARY KEY,
+                status_endpoint_id INTEGER,
+                info VARCHAR(${Environment.postgres.setup.availability_table_info_size}}),
+                response_time INTEGER,
+                time BIGINT`);
+
+            await client.queryString(`
+            CREATE TABLE ${Environment.postgres.setup.posts_table} (
+                id SERIAL PRIMARY KEY,
+                state VARCHAR(32),
+                title VARCHAR(256),
+                html VARCHAR(4096),
+                affected_endpoint_ids INTEGER[],
+                related_post_id INTEGER`);
+
+            await client.queryString(`
+            CREATE TABLE ${Environment.postgres.setup.status_groups_table} (
+                id SERIAL PRIMARY KEY,
+                name VARCHAR(256)`);
+
+
+            console.log("Completed table setup");
         } catch (err) {
-
+            console.log("Table setup failed", err);
         }
     } else {
-
+        console.log("Skipping table setup");
     }
     return true;
 }

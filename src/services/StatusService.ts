@@ -15,7 +15,7 @@ export default class StatusService {
     }
 
     public static async fetchStatus() {
-        this.getEndpoints();
+        await this.getEndpoints();
 
         let promises = [];
         let response_times: number[] = [];
@@ -38,7 +38,7 @@ export default class StatusService {
                     statusText: 'Network Error'
                 });
             }).finally(() => {
-                response_times[currentId] = Date.now() - response_times[currentId]
+                response_times[currentId] = Math.max(0, Date.now() - response_times[currentId]);
             });
         }
 

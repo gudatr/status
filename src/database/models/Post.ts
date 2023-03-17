@@ -4,6 +4,6 @@ export class Post {
     state!: 'investigating' | 'identified' | 'update' | 'resolved';
     title!: string;
     html!: string;
-    affected!: number[];
+    affected_endpoint_ids!: number[];
     related_post_id!: number;
 }
