@@ -6,4 +6,5 @@ export class Post {
     html!: string;
     affected_endpoint_ids!: number[];
     related_post_id!: number;
+    time!: number;
 }
