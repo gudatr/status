@@ -2,13 +2,16 @@ import { RequestData } from 'uws-router';
 import Setup from '../database/Setup';
 import { Environment } from './Environment';
 import { StatusEndpoint } from '../database/models/StatusEndpoint';
-import Availability from '../database/models/Availability';
 import { StatusGroup } from '../database/models/StatusGroup';
 import { Post } from '../database/models/Post';
 
 let pool = await Setup(Environment.postgres.threads);
 
 export default class ConfigService {
+
+    public static async authTest(request: RequestData) {
+        await request.end('OK');
+    }
 
     public static async updatePost(request: RequestData) {
         let model: Post = JSON.parse(request.data);
