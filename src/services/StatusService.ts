@@ -1,6 +1,7 @@
 import Setup from '../database/Setup';
 import { Environment } from './Environment';
 import { StatusEndpoint } from '../database/models/StatusEndpoint';
+import { AvailabilityStates } from '../database/models/Availability';
 
 const pool = await Setup(Environment.postgres.threads);
 
@@ -52,11 +53,15 @@ export default class StatusService {
 
             try {
                 let data = await result.json();
-                state = result.ok ? (data.state ?? 'okay') : 'outage';
+                state = result.ok ? data.state : AvailabilityStates.Impaired;
                 message = data.message ?? '-';
             } catch (err: any) {
-                state = 'impaired';
+                state = AvailabilityStates.Impaired;
                 message = err.message ?? 'Error';
+            }
+
+            if (!(state in AvailabilityStates)) {
+                state = AvailabilityStates.Impaired;
             }
 
             await this.writeAvailability(endpoint, state, message, response_times[i]);
@@ -65,7 +70,7 @@ export default class StatusService {
 
     private static async writeAvailability(endpoint: StatusEndpoint, state: string, info: string, response_time: number) {
         await pool.query('write-availability', `
-        INSERT INTO ${Environment.postgres.status_endpoints_table} (status_endpoint_id, state, info, response_time, time)
+        INSERT INTO ${Environment.postgres.availability_table} (status_endpoint_id, state, info, response_time, time)
         VALUES ($1,$2,$3,$4,$5)`, [endpoint.id, state, info, response_time, Date.now()]);
     }
 }

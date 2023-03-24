@@ -2,7 +2,7 @@ import { RequestData } from 'uws-router';
 import Setup from '../database/Setup';
 import { Environment } from './Environment';
 import { StatusEndpoint } from '../database/models/StatusEndpoint';
-import { Availability } from '../database/models/Availability';
+import Availability from '../database/models/Availability';
 import { StatusGroup } from '../database/models/StatusGroup';
 import { Post } from '../database/models/Post';
 
@@ -24,19 +24,24 @@ export default class FrontendService {
             return;
         }
 
-        let entries: Availability[] = await pool.query('frontend-get-availability', 'SELECT status_endpoint_id as endpoint_id, state, response_time as ms, time FROM availability WHERE time BETWEEN $1 AND $2', [time, time + interval]);
+        let entries: Availability[] = await pool.query('frontend-get-availability', `
+        SELECT status_endpoint_id as endpoint_id, state, response_time as ms, time FROM ${Environment.postgres.availability_table} WHERE time BETWEEN $1 AND $2`, [time, time + interval]);
 
         let endpoints: StatusEndpoint[];
 
         if (Environment.status.show_endpoint_name) {
-            endpoints = await pool.query('frontend-get-endpoints', 'SELECT id, frontend_name as name, status_group_id as group_id FROM status_endpoints', []);
+            endpoints = await pool.query('frontend-get-endpoints', `
+            SELECT id, frontend_name as name, status_group_id as group_id FROM ${Environment.postgres.status_endpoints_table}`, []);
         } else {
-            endpoints = await pool.query('frontend-get-endpoints', 'SELECT id, status_group_id as group_id FROM status_endpoints', []);
+            endpoints = await pool.query('frontend-get-endpoints', `
+            SELECT id, status_group_id as group_id FROM ${Environment.postgres.status_endpoints_table}`, []);
         }
 
-        let groups: StatusGroup[] = await pool.query('frontend-get-groups', 'SELECT id, frontend_name as name FROM status_endpoints', []);
+        let groups: StatusGroup[] = await pool.query('frontend-get-groups', `
+        SELECT id, frontend_name as name FROM ${Environment.postgres.status_groups_table}`, []);
 
-        let posts: Post[] = await pool.query('frontend-get-posts', 'SELECT id, state, title, html, affected_endpoint_ids as endpoint_id, related_post_id FROM posts WHERE time BETWEEN $1 AND $2', [time, time + interval]);
+        let posts: Post[] = await pool.query('frontend-get-posts', `
+        SELECT id, state, title, html, affected_endpoint_ids as endpoint_id, related_post_id FROM ${Environment.postgres.posts_table} WHERE time BETWEEN $1 AND $2`, [time, time + interval]);
 
         await request.end(JSON.stringify({ entries, endpoints, groups, posts }), false, 9);
     }

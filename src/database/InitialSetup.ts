@@ -43,6 +43,11 @@ export default async function TableSetup(pool: Postgres): Promise<boolean> {
                 id SERIAL PRIMARY KEY,
                 name VARCHAR(256)`);
 
+            await client.queryString(`
+            CREATE TABLE ${Environment.postgres.setup.status_groups_table} (
+                id SERIAL PRIMARY KEY,
+                name VARCHAR(256)`);
+
 
             console.log("Completed table setup");
         } catch (err) {
