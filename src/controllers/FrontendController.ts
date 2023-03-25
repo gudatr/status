@@ -1,6 +1,6 @@
 import { RequestData } from 'uws-router';
 import Setup from '../database/Setup';
-import { Environment } from './Environment';
+import { Environment } from '../services/Environment';
 import { StatusEndpoint } from '../database/models/StatusEndpoint';
 import Availability from '../database/models/Availability';
 import { StatusGroup } from '../database/models/StatusGroup';
@@ -10,7 +10,7 @@ let pool = await Setup(Environment.postgres.threads);
 let interval = Environment.history.timeframe_days * 24 * 60 * 60 * 1000;
 let matchDateRegEx = /[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])/;
 
-export default class FrontendService {
+export default class FrontendController {
 
     public async getIntervalData(request: RequestData) {
         let parsedQuery = new URLSearchParams(request.query);

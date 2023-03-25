@@ -1,12 +1,12 @@
 import { Router } from "uws-router";
 import { Environment } from "./services/Environment";
-import ConfigService from './services/ConfigService';
-import FrontendService from './services/FrontendService';
+import ConfigController from './controllers/ConfigController';
+import FrontendController from './controllers/FrontendController';
 import { CatchExceptionMiddleware } from "./middleware/CatchExceptionMiddleware";
 import { ConfigAuthMiddleware } from "./middleware/ConfigAuthMiddleware";
 import StatusService from './services/StatusService';
 
-let router = new Router(Environment.ssl, {
+let app = new Router(Environment.ssl, {
     key_file_name: Environment.ssl_key,
     cert_file_name: Environment.ssl_cert
 });
@@ -15,39 +15,39 @@ process.on('uncaughtException', (err) => {
     console.log(err);
 });
 
-router.middleware(CatchExceptionMiddleware, () => {
-    let frontendService = new FrontendService();
-    router.group('frontend', () => {
-        router.endpoint('get', frontendService.getIntervalData, 'interval');
-        router.endpoint('get', frontendService.getIntervalData, 'overview');
-    }, frontendService);
+app.middleware(CatchExceptionMiddleware, () => {
+    let frontendController = new FrontendController();
+    app.group('frontend', () => {
+        app.endpoint('get', frontendController.getIntervalData, 'interval');
+        app.endpoint('get', frontendController.getIntervalData, 'overview');
+    }, frontendController);
 
-    let configService = new ConfigService();
-    router.group('config', () => {
-        router.middleware(ConfigAuthMiddleware, () => {
-            router.endpoint('get', configService.authTest, 'auth');
-            router.endpoint('get', configService.getPosts, 'posts/index');
-            router.endpoint('get', configService.getStatusEndpoints, 'status-endpoints/index');
-            router.endpoint('get', configService.getStatusGroups, 'status-groups/index');
+    let configController = new ConfigController();
+    app.group('config', () => {
+        app.middleware(ConfigAuthMiddleware, () => {
+            app.endpoint('get', configController.authTest, 'auth');
+            app.endpoint('get', configController.getPosts, 'posts/index');
+            app.endpoint('get', configController.getStatusEndpoints, 'status-endpoints/index');
+            app.endpoint('get', configController.getStatusGroups, 'status-groups/index');
 
-            router.endpoint('post', configService.updatePost, 'posts/update');
-            router.endpoint('post', configService.updateStatusEndpoint, 'status-endpoints/update');
-            router.endpoint('post', configService.updateStatusGroup, 'status-groups/update');
+            app.endpoint('post', configController.updatePost, 'posts/update');
+            app.endpoint('post', configController.updateStatusEndpoint, 'status-endpoints/update');
+            app.endpoint('post', configController.updateStatusGroup, 'status-groups/update');
 
-            router.endpoint('del', configService.updatePost, 'posts/update');
-            router.endpoint('del', configService.updateStatusEndpoint, 'status-endpoints/update');
-            router.endpoint('del', configService.updateStatusGroup, 'status-groups/update');
+            app.endpoint('del', configController.updatePost, 'posts/update');
+            app.endpoint('del', configController.updateStatusEndpoint, 'status-endpoints/update');
+            app.endpoint('del', configController.updateStatusGroup, 'status-groups/update');
         });
-    }, configService);
+    }, configController);
 
-    router.group('files', () => {
-        router.serveFileRelative('./frontend/config.html', 'config.html');
-        router.serveFileRelative('./frontend/history.html', 'history.html');
-        router.serveFileRelative('./frontend/status.html', 'status.html');
-        router.serveFileRelative('./frontend/logo.png', 'logo.png');
-        router.serveFileRelative('./frontend/style.css', 'style.css');
-        router.serveFileRelative('./frontend/translation.js', 'translation.js');
-        router.serveFileRelative('./frontend/frontend.js', 'frontend.js');
+    app.group('files', () => {
+        app.serveFileRelative('./frontend/config.html', 'config.html');
+        app.serveFileRelative('./frontend/history.html', 'history.html');
+        app.serveFileRelative('./frontend/status.html', 'status.html');
+        app.serveFileRelative('./frontend/logo.png', 'logo.png');
+        app.serveFileRelative('./frontend/style.css', 'style.css');
+        app.serveFileRelative('./frontend/translation.js', 'translation.js');
+        app.serveFileRelative('./frontend/frontend.js', 'frontend.js');
     });
 });
 
@@ -55,7 +55,7 @@ let statusService = new StatusService();
 setInterval(() => { statusService.fetchStatus(); })
 
 
-router.listen(Environment.host, Environment.port, (listen) => {
+app.listen(Environment.host, Environment.port, (listen) => {
     if (listen) {
         console.log(`Application is listening on host ${Environment.host}, port: ${Environment.port}`);
     } else {
