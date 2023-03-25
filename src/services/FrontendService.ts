@@ -12,7 +12,7 @@ let matchDateRegEx = /[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])/;
 
 export default class FrontendService {
 
-    public static async getIntervalData(request: RequestData) {
+    public async getIntervalData(request: RequestData) {
         let parsedQuery = new URLSearchParams(request.query);
         let date = parsedQuery.get('date') ?? '';
 
@@ -46,7 +46,7 @@ export default class FrontendService {
         await request.end(JSON.stringify({ entries, endpoints, groups, posts }), false, 9);
     }
 
-    public static async getIntervalOverview(request: RequestData) {
+    public async getIntervalOverview(request: RequestData) {
         let data = await pool.query('frontend-overview',
             `SELECT
             state,
@@ -59,7 +59,7 @@ export default class FrontendService {
         await request.end(JSON.stringify({ data, interval }), false, 9);
     }
 
-    private static transformDate(date: string): number | undefined {
+    private transformDate(date: string): number | undefined {
         date = date.substring(0, 10);
         if (!matchDateRegEx.test(date)) return undefined;
         return Date.parse(date + ' 23:59:00');

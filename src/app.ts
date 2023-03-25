@@ -2,9 +2,9 @@ import { Router } from "uws-router";
 import { Environment } from "./services/Environment";
 import ConfigService from './services/ConfigService';
 import FrontendService from './services/FrontendService';
-import path from "path";
 import { CatchExceptionMiddleware } from "./middleware/CatchExceptionMiddleware";
 import { ConfigAuthMiddleware } from "./middleware/ConfigAuthMiddleware";
+import StatusService from './services/StatusService';
 
 let router = new Router(Environment.ssl, {
     key_file_name: Environment.ssl_key,
@@ -16,27 +16,29 @@ process.on('uncaughtException', (err) => {
 });
 
 router.middleware(CatchExceptionMiddleware, () => {
+    let frontendService = new FrontendService();
     router.group('frontend', () => {
-        router.endpoint('get', FrontendService.getIntervalData, 'interval');
-        router.endpoint('get', FrontendService.getIntervalData, 'overview');
-    });
+        router.endpoint('get', frontendService.getIntervalData, 'interval');
+        router.endpoint('get', frontendService.getIntervalData, 'overview');
+    }, frontendService);
 
+    let configService = new ConfigService();
     router.group('config', () => {
         router.middleware(ConfigAuthMiddleware, () => {
-            router.endpoint('get', ConfigService.authTest, 'auth');
-            router.endpoint('get', ConfigService.getPosts, 'posts/index');
-            router.endpoint('get', ConfigService.getStatusEndpoints, 'status-endpoints/index');
-            router.endpoint('get', ConfigService.getStatusGroups, 'status-groups/index');
+            router.endpoint('get', configService.authTest, 'auth');
+            router.endpoint('get', configService.getPosts, 'posts/index');
+            router.endpoint('get', configService.getStatusEndpoints, 'status-endpoints/index');
+            router.endpoint('get', configService.getStatusGroups, 'status-groups/index');
 
-            router.endpoint('post', ConfigService.updatePost, 'posts/update');
-            router.endpoint('post', ConfigService.updateStatusEndpoint, 'status-endpoints/update');
-            router.endpoint('post', ConfigService.updateStatusGroup, 'status-groups/update');
+            router.endpoint('post', configService.updatePost, 'posts/update');
+            router.endpoint('post', configService.updateStatusEndpoint, 'status-endpoints/update');
+            router.endpoint('post', configService.updateStatusGroup, 'status-groups/update');
 
-            router.endpoint('del', ConfigService.updatePost, 'posts/update');
-            router.endpoint('del', ConfigService.updateStatusEndpoint, 'status-endpoints/update');
-            router.endpoint('del', ConfigService.updateStatusGroup, 'status-groups/update');
+            router.endpoint('del', configService.updatePost, 'posts/update');
+            router.endpoint('del', configService.updateStatusEndpoint, 'status-endpoints/update');
+            router.endpoint('del', configService.updateStatusGroup, 'status-groups/update');
         });
-    });
+    }, configService);
 
     router.group('files', () => {
         router.serveFileRelative('./frontend/config.html', 'config.html');
@@ -49,6 +51,9 @@ router.middleware(CatchExceptionMiddleware, () => {
     });
 });
 
+let statusService = new StatusService();
+setInterval(() => { statusService.fetchStatus(); })
+
 
 router.listen(Environment.host, Environment.port, (listen) => {
     if (listen) {
@@ -57,3 +62,5 @@ router.listen(Environment.host, Environment.port, (listen) => {
         console.log(`Application failed to listen on host ${Environment.host}, port: ${Environment.port}`);
     }
 });
+
+

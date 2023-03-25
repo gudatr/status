@@ -9,13 +9,13 @@ await pool.initialize();
 
 export default class StatusService {
 
-    static endpoints: StatusEndpoint[];
+    private endpoints: StatusEndpoint[] = [];
 
-    private static async getEndpoints() {
+    private async getEndpoints() {
         this.endpoints = await pool.query('get-status-endpoints', `SELECT * FROM ${Environment.postgres.status_endpoints_table}`, [])
     }
 
-    public static async fetchStatus() {
+    public async fetchStatus() {
         await this.getEndpoints();
 
         let promises = [];
@@ -68,7 +68,7 @@ export default class StatusService {
         }
     }
 
-    private static async writeAvailability(endpoint: StatusEndpoint, state: string, info: string, response_time: number) {
+    private async writeAvailability(endpoint: StatusEndpoint, state: string, info: string, response_time: number) {
         await pool.query('write-availability', `
         INSERT INTO ${Environment.postgres.availability_table} (status_endpoint_id, state, info, response_time, time)
         VALUES ($1,$2,$3,$4,$5)`, [endpoint.id, state, info, response_time, Date.now()]);

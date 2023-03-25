@@ -9,11 +9,11 @@ let pool = await Setup(Environment.postgres.threads);
 
 export default class ConfigService {
 
-    public static async authTest(request: RequestData) {
+    public async authTest(request: RequestData) {
         await request.end('OK');
     }
 
-    public static async updatePost(request: RequestData) {
+    public async updatePost(request: RequestData) {
         let model: Post = JSON.parse(request.data);
         let id: any[];
 
@@ -41,11 +41,11 @@ export default class ConfigService {
         await request.end(id.pop().id, false);
     }
 
-    public static async getPosts(request: RequestData) {
+    public async getPosts(request: RequestData) {
         request.end(JSON.stringify(await pool.query('get-posts', `SELECT * FROM ${Environment.postgres.posts_table}`, [])), false, 9);
     }
 
-    public static async updateStatusEndpoint(request: RequestData) {
+    public async updateStatusEndpoint(request: RequestData) {
         let model: StatusEndpoint = JSON.parse(request.data);
         let id: any[];
 
@@ -73,11 +73,11 @@ export default class ConfigService {
         await request.end(id.pop().id, false);
     }
 
-    public static async getStatusEndpoints(request: RequestData) {
+    public async getStatusEndpoints(request: RequestData) {
         request.end(JSON.stringify(await pool.query('get-status-endpoints', `SELECT * FROM ${Environment.postgres.status_endpoints_table}`, [])), false, 9);
     }
 
-    public static async updateStatusGroup(request: RequestData) {
+    public async updateStatusGroup(request: RequestData) {
         let model: StatusGroup = JSON.parse(request.data);
         let id: any[];
 
@@ -103,7 +103,7 @@ export default class ConfigService {
         await request.end(id.pop().id, false);
     }
 
-    public static async getStatusGroups(request: RequestData) {
+    public async getStatusGroups(request: RequestData) {
         request.end(JSON.stringify(await pool.query('get-status-groups', `SELECT * FROM ${Environment.postgres.status_groups_table}`, [])), false, 9);
     }
 }
