@@ -41,9 +41,9 @@ import TableSetup from "./database/InitialSetup";
                 app.endpoint('post', configController.updateStatusEndpoint, 'status-endpoints/update');
                 app.endpoint('post', configController.updateStatusGroup, 'status-groups/update');
 
-                app.endpoint('del', configController.updatePost, 'posts/update');
-                app.endpoint('del', configController.updateStatusEndpoint, 'status-endpoints/update');
-                app.endpoint('del', configController.updateStatusGroup, 'status-groups/update');
+                app.endpoint('del', configController.updatePost, 'posts/delete');
+                app.endpoint('del', configController.updateStatusEndpoint, 'status-endpoints/delete');
+                app.endpoint('del', configController.updateStatusGroup, 'status-groups/delete');
             });
         }, configController);
 
