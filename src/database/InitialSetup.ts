@@ -3,10 +3,11 @@ import { Environment } from '../services/Environment';
 
 export default async function TableSetup(pool: Postgres): Promise<boolean> {
 
-    let table_columns: { column_name: string }[] = await pool.query('table-info',
+    let table_columns = await pool.query('table-info',
         `SELECT column_name FROM information_schema.columns
         WHERE table_schema = $1
         AND table_name = $2;`, [Environment.postgres.schema, Environment.postgres.setup.status_endpoints_table]);
+
     if (table_columns.length === 0) {
         let client = await pool.connect();
 

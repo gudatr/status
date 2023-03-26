@@ -47,10 +47,13 @@ import TableSetup from "./database/InitialSetup";
             });
         }, configController);
 
+        app.group('app', () => {
+            app.serveFileRelative('./frontend/config.html', 'config');
+            app.serveFileRelative('./frontend/history.html', 'history');
+            app.serveFileRelative('./frontend/status.html', 'status');
+        });
+
         app.group('files', () => {
-            app.serveFileRelative('./frontend/config.html', 'config.html');
-            app.serveFileRelative('./frontend/history.html', 'history.html');
-            app.serveFileRelative('./frontend/status.html', 'status.html');
             app.serveFileRelative('./frontend/logo.png', 'logo.png');
             app.serveFileRelative('./frontend/style.css', 'style.css');
             app.serveFileRelative('./frontend/translation.js', 'translation.js');
@@ -65,6 +68,7 @@ import TableSetup from "./database/InitialSetup";
     app.listen(Environment.host, Environment.port, (listen) => {
         if (listen) {
             console.log(`Application is listening on host ${Environment.host}, port: ${Environment.port}`);
+            console.log(app.getRoutes());
         } else {
             console.log(`Application failed to listen on host ${Environment.host}, port: ${Environment.port}`);
         }
