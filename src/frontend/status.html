@@ -7,10 +7,17 @@
     <script src="//unpkg.com/alpinejs" defer></script>
 </head>
 
-<body x-data class="body-base">
+<body x-data style="background-color: #111;">
     <div>
-        <template x-for="i in 10">
-            <div style="background: green;"></div>
+        <template x-for="i in 4">
+            <div
+                :style="(i==1 ? 'border-radius: 12px 12px 0 0;' : (i==4 ? 'border-radius: 0 0 12px 12px;' : '')) + 'background:#333; height: 10%; padding: 1%; border: solid #999; border-width: 1px;'">
+                <template x-for="x in 90">
+                    <div
+                        style="background: green; height: 100%; float: left; border-radius: 100px; margin: 0 calc(25.0%/90.0) 0 calc(25.0%/90.0); width: calc(50.0%/90.0);">
+                    </div>
+                </template>
+            </div>
         </template>
     </div>
 </body>

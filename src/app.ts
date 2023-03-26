@@ -48,9 +48,9 @@ import TableSetup from "./database/InitialSetup";
         }, configController);
 
         app.group('app', () => {
-            app.serveFileRelative('./frontend/config.html', 'config');
-            app.serveFileRelative('./frontend/history.html', 'history');
-            app.serveFileRelative('./frontend/status.html', 'status');
+            app.serveFile('./src/frontend/config.html', 'config', 0);
+            app.serveFile('./src/frontend/history.html', 'history', 0);
+            app.serveFile('./src/frontend/status.html', 'status', 0);
         });
 
         app.group('files', () => {

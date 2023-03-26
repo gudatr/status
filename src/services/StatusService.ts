@@ -28,7 +28,8 @@ export default class StatusService {
             promises[currentId] = fetch(endpoint.url, {
                 signal: AbortSignal.timeout(Environment.status_timeout),
                 cache: 'no-cache',
-                body: endpoint.body
+                body: endpoint.body,
+                headers: JSON.parse(endpoint.headers),
             }).catch((error) => {
                 return new Response(JSON.stringify({
                     message: error.message
