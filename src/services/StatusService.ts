@@ -1,18 +1,16 @@
-import Setup from '../database/Setup';
 import { Environment } from './Environment';
 import { StatusEndpoint } from '../database/models/StatusEndpoint';
 import { AvailabilityStates } from '../database/models/Availability';
-
-const pool = await Setup(Environment.postgres.threads);
-
-await pool.initialize();
+import Postgres from 'postgres-pool';
 
 export default class StatusService {
 
     private endpoints: StatusEndpoint[] = [];
 
+    constructor(private pool: Postgres) { }
+
     private async getEndpoints() {
-        this.endpoints = await pool.query('get-status-endpoints', `SELECT * FROM ${Environment.postgres.status_endpoints_table}`, [])
+        this.endpoints = await this.pool.query('get-status-endpoints', `SELECT * FROM ${Environment.postgres.setup.status_endpoints_table}`, [])
     }
 
     public async fetchStatus() {
@@ -69,8 +67,8 @@ export default class StatusService {
     }
 
     private async writeAvailability(endpoint: StatusEndpoint, state: string, info: string, response_time: number) {
-        await pool.query('write-availability', `
-        INSERT INTO ${Environment.postgres.availability_table} (status_endpoint_id, state, info, response_time, time)
+        await this.pool.query('write-availability', `
+        INSERT INTO ${Environment.postgres.setup.availability_table} (status_endpoint_id, state, info, response_time, time)
         VALUES ($1,$2,$3,$4,$5)`, [endpoint.id, state, info, response_time, Date.now()]);
     }
 }

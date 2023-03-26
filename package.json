@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc --build --force && copyfiles -u 1 src/**/*.{html,ico,css,js,map} build/",
     "start": "npm run build && node build/app.js --no-warnings",
-    "test": "npm run build && node build/test.js --experimental-test-coverage --test-reporter=tap"
+    "test": "npm run build && node build/test.js --experimental-test-coverage --test-reporter=spec"
   },
   "repository": {
     "type": "git",
@@ -19,7 +19,8 @@
   },
   "homepage": "https://github.com/gudatr/status#readme",
   "devDependencies": {
-    "@types/node": "^18.15.0"
+    "@types/node": "^18.15.0",
+    "copyfiles": "^2.4.1"
   },
   "dependencies": {
     "postgres-pool": "github:gudatr/postgres-pool",

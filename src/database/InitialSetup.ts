@@ -6,7 +6,7 @@ export default async function TableSetup(pool: Postgres): Promise<boolean> {
     let table_columns: { column_name: string }[] = await pool.query('table-info',
         `SELECT column_name FROM information_schema.columns
         WHERE table_schema = $1
-        AND table_name = $2;`, [Environment.postgres.schema, Environment.postgres.logs_table]);
+        AND table_name = $2;`, [Environment.postgres.schema, Environment.postgres.setup.status_endpoints_table]);
     if (table_columns.length === 0) {
         let client = await pool.connect();
 
@@ -16,18 +16,21 @@ export default async function TableSetup(pool: Postgres): Promise<boolean> {
             await client.queryString(`
             CREATE TABLE ${Environment.postgres.setup.status_endpoints_table} (
                 id SERIAL PRIMARY KEY,
-                name VARCHAR(256),
                 url VARCHAR(2048),
+                name VARCHAR(256),
+                frontend_name VARCHAR(256),
                 headers VARCHAR(2048),
-                body VARCHAR(2048)`);
+                body VARCHAR(2048),
+                status_group_id INTEGER)`);
 
             await client.queryString(`
             CREATE TABLE ${Environment.postgres.setup.availability_table} (
                 id SERIAL PRIMARY KEY,
                 status_endpoint_id INTEGER,
-                info VARCHAR(${Environment.postgres.setup.availability_table_info_size}}),
+                info VARCHAR(${Environment.postgres.setup.availability_table_info_size}),
+                state VARCHAR(10),
                 response_time INTEGER,
-                time BIGINT`);
+                time BIGINT)`);
 
             await client.queryString(`
             CREATE TABLE ${Environment.postgres.setup.posts_table} (
@@ -36,18 +39,14 @@ export default async function TableSetup(pool: Postgres): Promise<boolean> {
                 title VARCHAR(256),
                 html VARCHAR(4096),
                 affected_endpoint_ids INTEGER[],
-                related_post_id INTEGER`);
+                related_post_id INTEGER,
+                time BIGINT)`);
 
             await client.queryString(`
             CREATE TABLE ${Environment.postgres.setup.status_groups_table} (
                 id SERIAL PRIMARY KEY,
-                name VARCHAR(256)`);
-
-            await client.queryString(`
-            CREATE TABLE ${Environment.postgres.setup.status_groups_table} (
-                id SERIAL PRIMARY KEY,
-                name VARCHAR(256)`);
-
+                name VARCHAR(256),
+                frontend_name VARCHAR(256))`);
 
             console.log("Completed table setup");
         } catch (err) {
