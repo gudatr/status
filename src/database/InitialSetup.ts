@@ -48,6 +48,12 @@ export default async function TableSetup(pool: Postgres): Promise<boolean> {
                 name VARCHAR(256),
                 frontend_name VARCHAR(256))`);
 
+            await client.queryString(`
+            CREATE INDEX availability_time_index ON ${Environment.postgres.setup.availability_table} USING BTREE(time)`);
+
+            await client.queryString(`
+            CREATE INDEX posts_time_index ON ${Environment.postgres.setup.posts_table} USING BTREE(time)`);
+
             console.log("Completed table setup");
         } catch (err) {
             console.log("Table setup failed", err);
