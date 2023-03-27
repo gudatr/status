@@ -47,7 +47,8 @@ export default async function TableSetup(pool: Postgres): Promise<boolean> {
             CREATE TABLE ${Environment.postgres.setup.status_groups_table} (
                 id SERIAL PRIMARY KEY,
                 name VARCHAR(256),
-                frontend_name VARCHAR(256))`);
+                frontend_name VARCHAR(256),
+                display_detailed_info BOOLEAN)`);
 
             await client.queryString(`
             CREATE INDEX availability_time_index ON ${Environment.postgres.setup.availability_table} USING BTREE(time)`);
