@@ -7,18 +7,32 @@
     <script src="//unpkg.com/alpinejs" defer></script>
 </head>
 
-<body x-data style="background-color: #111;">
-    <div>
-        <template x-for="i in 4">
-            <div
-                :style="(i==1 ? 'border-radius: 12px 12px 0 0;' : (i==4 ? 'border-radius: 0 0 12px 12px;' : '')) + 'background:#333; height: 10%; padding: 1%; border: solid #999; border-width: 1px;'">
-                <template x-for="x in 90">
-                    <div
-                        style="background: green; height: 100%; float: left; border-radius: 100px; margin: 0 calc(25.0%/90.0) 0 calc(25.0%/90.0); width: calc(50.0%/90.0);">
+<body x-data style="background-color: #1d1d1d;">
+    <div style="width:66%; margin: auto; color: #fff;">
+        <img src="/files/logo.png" style="width:25%; height:auto; margin: 2.5% 0 2.5% 0;"></img>
+        <div>
+            <template x-for="i in 4">
+                <div
+                    :style="(i==1 ? 'border-radius: 12px 12px 0 0;' : (i==4 ? 'border-radius: 0 0 12px 12px;' : '')) + 'background:#2c2c2c; height: 15%; padding: 1%; border: solid #bbb; border-width: 1px;'">
+                    <div style="height: 33%;">
+                        <span style="font-size: larger; font-weight: bold; float: left;">STATUS BLOCK</span>
+                        <span style="font-size: larger; color: forestgreen; float: right;">Operational</span>
                     </div>
-                </template>
-            </div>
-        </template>
+                    <div style="height: 33%;">
+                        <template x-for="x in 90">
+                            <div
+                                style="background: forestgreen; height: 100%; float: left; margin: 0 calc(25.0%/90.0) 0 calc(25.0%/90.0); width: calc(50.0%/90.0);">
+                            </div>
+                        </template>
+                    </div>
+                    <div style="height: 33%; text-align: center; padding: 1%;">
+                        <span style="float: left;">90 Days ago</span>
+                        <span>69% Uptime</span>
+                        <span style="float: right;">Today</span>
+                    </div>
+                </div>
+            </template>
+        </div>
     </div>
 </body>
 
