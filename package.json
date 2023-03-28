@@ -23,7 +23,7 @@
     "simple-copy-files": "^1.0.2"
   },
   "dependencies": {
-    "postgres-pool": "github:gudatr/postgres-pool",
-    "uws-router": "github:gudatr/uws-router"
+    "pg-pool-minimal": "^1.0.0",
+    "uws-router": "^1.0.0"
   }
 }
