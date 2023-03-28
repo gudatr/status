@@ -4,7 +4,7 @@
   "description": "A simple status page inspired by the atlassian status page with customizable status requests",
   "main": "build/app.js",
   "scripts": {
-    "build": "tsc --build --force && copyfiles -u 1 src/**/*.{html,ico,css,js,map,png,jpg,jpeg} build/",
+    "build": "tsc --build --force && npm exec simple-copy-files source=./src/frontend/ types=.html,.ico,.css,.js,.map,.png,.jpg,.jpeg destination=./build/frontend/",
     "start": "npm run build && node build/app.js --no-warnings",
     "test": "npm run build && node build/test.js --experimental-test-coverage --test-reporter=spec"
   },
@@ -20,7 +20,7 @@
   "homepage": "https://github.com/gudatr/status#readme",
   "devDependencies": {
     "@types/node": "^18.15.0",
-    "copyfiles": "^2.4.1"
+    "simple-copy-files": "1.0.2"
   },
   "dependencies": {
     "postgres-pool": "github:gudatr/postgres-pool",
