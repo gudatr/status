@@ -20,7 +20,7 @@
   "homepage": "https://github.com/gudatr/status#readme",
   "devDependencies": {
     "@types/node": "^18.15.0",
-    "simple-copy-files": "1.0.2"
+    "simple-copy-files": "^1.0.2"
   },
   "dependencies": {
     "postgres-pool": "github:gudatr/postgres-pool",
