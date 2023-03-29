@@ -3,7 +3,7 @@ import { Environment } from '../services/Environment';
 import { StatusEndpoint } from '../database/models/StatusEndpoint';
 import { StatusGroup } from '../database/models/StatusGroup';
 import { Post } from '../database/models/Post';
-import Postgres from 'postgres-pool';
+import Postgres from 'pg-pool-minimal';
 
 export default class ConfigController {
 

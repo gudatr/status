@@ -4,7 +4,7 @@ import { StatusEndpoint } from '../database/models/StatusEndpoint';
 import Availability from '../database/models/Availability';
 import { StatusGroup } from '../database/models/StatusGroup';
 import { Post } from '../database/models/Post';
-import Postgres from 'postgres-pool';
+import Postgres from 'pg-pool-minimal';
 
 let interval = Environment.history.timeframe_days * 24 * 60 * 60 * 1000;
 let matchDateRegEx = /[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])/;

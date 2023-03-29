@@ -1,4 +1,4 @@
-import Postgres from "postgres-pool";
+import Postgres from "pg-pool-minimal";
 import { Environment } from "../services/Environment";
 
 export default async function Setup(threads: number) {

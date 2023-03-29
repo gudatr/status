@@ -1,7 +1,7 @@
 import { Environment } from './Environment';
 import { StatusEndpoint } from '../database/models/StatusEndpoint';
 import { AvailabilityStates } from '../database/models/Availability';
-import Postgres from 'postgres-pool';
+import Postgres from 'pg-pool-minimal';
 
 export default class StatusService {
 
