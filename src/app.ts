@@ -23,29 +23,29 @@ import TableSetup from "./database/InitialSetup";
     });
 
     app.middleware(CatchExceptionMiddleware, () => {
-        let frontendController = new FrontendController(pool);
+        let frontend = new FrontendController(pool);
         app.group('frontend', () => {
-            app.endpoint('get', frontendController.getIntervalData, 'interval');
-            app.endpoint('get', frontendController.getIntervalData, 'overview');
-        }, frontendController);
+            app.endpoint('get', frontend.getIntervalData, 'interval');
+            app.endpoint('get', frontend.getIntervalData, 'overview');
+        }, frontend);
 
-        let configController = new ConfigController(pool);
+        let config = new ConfigController(pool);
         app.group('config', () => {
             app.middleware(ConfigAuthMiddleware, () => {
-                app.endpoint('get', configController.authTest, 'auth');
-                app.endpoint('get', configController.getPosts, 'posts/index');
-                app.endpoint('get', configController.getStatusEndpoints, 'status-endpoints/index');
-                app.endpoint('get', configController.getStatusGroups, 'status-groups/index');
+                app.endpoint('get', config.authTest, 'auth');
+                app.endpoint('get', config.getPosts, 'posts/index');
+                app.endpoint('get', config.getStatusEndpoints, 'status-endpoints/index');
+                app.endpoint('get', config.getStatusGroups, 'status-groups/index');
 
-                app.endpoint('post', configController.updatePost, 'posts/update');
-                app.endpoint('post', configController.updateStatusEndpoint, 'status-endpoints/update');
-                app.endpoint('post', configController.updateStatusGroup, 'status-groups/update');
+                app.endpoint('post', config.updatePost, 'posts/update');
+                app.endpoint('post', config.updateStatusEndpoint, 'status-endpoints/update');
+                app.endpoint('post', config.updateStatusGroup, 'status-groups/update');
 
-                app.endpoint('del', configController.updatePost, 'posts/delete');
-                app.endpoint('del', configController.updateStatusEndpoint, 'status-endpoints/delete');
-                app.endpoint('del', configController.updateStatusGroup, 'status-groups/delete');
+                app.endpoint('del', config.updatePost, 'posts/delete');
+                app.endpoint('del', config.updateStatusEndpoint, 'status-endpoints/delete');
+                app.endpoint('del', config.updateStatusGroup, 'status-groups/delete');
             });
-        }, configController);
+        }, config);
 
         app.group('app', () => {
             app.serveFile('./src/frontend/config.html', 'config', 0);
