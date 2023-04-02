@@ -5,12 +5,16 @@ var Alpine: {
 
 const _global = (window || global) as any
 
-let basicPost: any = () => {
+function getCookie(name: string): string | undefined {
+    return document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'))?.pop();
+}
+
+function basicPost() {
     return {
         method: 'POST',
         cache: 'no-cache',
         headers: {
-            'auth-token': Alpine.store('credentials').password
+            'Authorization': document.cookie
         }
     };
 }

@@ -12,6 +12,6 @@ export async function ConfigAuthMiddleware(request: RequestData, next: NextFunct
         await next(request);
     } else {
         request.writeStatus('403 Unauthorized');
-        request.end(' ');
+        await request.end(' ');
     }
 }

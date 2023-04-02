@@ -11,6 +11,6 @@ export async function CatchExceptionMiddleware(request: RequestData, next: NextF
     } catch (err: any) {
         console.log(err);
         request.writeStatus('500 Internal Server Error');
-        request.end('Unhandled exception');
+        await request.end('Unhandled exception');
     }
 }

@@ -53,11 +53,16 @@ import TableSetup from "./database/InitialSetup";
             app.serveFile('./src/frontend/status.html', 'status', 0);
         });
 
+        app.serveFileRelative('./frontend/icon.png', 'favicon.ico');
+
         app.group('files', () => {
             app.serveFileRelative('./frontend/logo.png', 'logo.png');
             app.serveFileRelative('./frontend/style.css', 'style.css');
             app.serveFileRelative('./frontend/translation.js', 'translation.js');
-            app.serveFileRelative('./frontend/frontend.js', 'frontend.js');
+            app.serveFileRelative('./frontend/base.js', 'base.js');
+            app.serveFileRelative('./frontend/config.js', 'config.js');
+            app.serveFileRelative('./frontend/history.js', 'history.js');
+            app.serveFileRelative('./frontend/status.js', 'status.js');
         });
     });
 
